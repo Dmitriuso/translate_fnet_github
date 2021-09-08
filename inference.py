@@ -34,7 +34,7 @@ class TranslationInference:
         self.model.eval()
 
         if isinstance(sentence, str):
-            nlp = spacy.load('de_core_news_sm')
+            nlp = spacy.load('de_dep_news_trf')
             tokens = [token.text.lower() for token in nlp(sentence)]
         else:
             tokens = [token.lower() for token in sentence]
@@ -47,7 +47,7 @@ class TranslationInference:
         src_mask = self.model.make_src_mask(src_tensor)
 
         with torch.no_grad():
-            enc_src = self.model.encoder(src_tensor)
+            enc_src = self.model.encoder(src_tensor, src_mask)
 
         trg_indexes = [self.trg_field.vocab.stoi[self.trg_field.init_token]]
 
@@ -58,7 +58,7 @@ class TranslationInference:
             trg_mask = self.model.make_trg_mask(trg_tensor)
 
             with torch.no_grad():
-                output = self.model.decoder(trg_tensor, enc_src)
+                output = self.model.decoder(trg_tensor, enc_src, trg_mask, src_mask)
 
             pred_token = output.argmax(2)[:,-1].item()
 

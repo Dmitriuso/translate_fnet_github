@@ -22,6 +22,8 @@ from utils.pre_processing import SRC, TRG, train_data, valid_data, test_data
 from inference import TranslationInference
 
 work_dir = Path(__file__).parent.resolve()
+models_dir = work_dir / "models"
+models_dir.mkdir(parents=True, exist_ok=True)
 
 SEED = 1234
 
@@ -32,7 +34,7 @@ torch.cuda.manual_seed(SEED)
 torch.backends.cudnn.deterministic = True
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-output_model_path = './translate_fnet_de_en_trf.pt'
+output_model_path = models_dir / "translate_fnet_de_en_trf.pt"
 
 BATCH_SIZE = 128
 

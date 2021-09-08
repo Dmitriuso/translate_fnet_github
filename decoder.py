@@ -31,7 +31,7 @@ class Decoder(nn.Module):
         
         self.scale = torch.sqrt(torch.FloatTensor([d_model])).to(device)
         
-    def forward(self, trg, enc_src): # , trg_mask, src_mask):
+    def forward(self, trg, enc_src, trg_mask, src_mask):
         
         #trg = [batch size, trg len]
         #enc_src = [batch size, src len, hid dim]
@@ -50,12 +50,14 @@ class Decoder(nn.Module):
         #trg = [batch size, trg len, hid dim]
         
         for layer in self.layers:
-            trg = layer(trg, enc_src) # , trg_mask, src_mask)
+            pre_output = layer(trg, enc_src, trg_mask, src_mask)
+            # print(f'decoder trg size before fc_out layer: {pre_output.shape}')
         
         #trg = [batch size, trg len, hid dim]
         #attention = [batch size, n heads, trg len, src len]
         
-        output = self.fc_out(trg)
+        output = self.fc_out(pre_output)
+        # print(f'output size: {output.shape}')
         
         #output = [batch size, trg len, output dim]
             

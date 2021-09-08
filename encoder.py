@@ -29,7 +29,7 @@ class Encoder(nn.Module):
         
         self.scale = torch.sqrt(torch.FloatTensor([d_model])).to(device)
         
-    def forward(self, src):
+    def forward(self, src, src_mask):
         
         #src = [batch size, src len]
         #src_mask = [batch size, 1, 1, src len]
@@ -46,7 +46,7 @@ class Encoder(nn.Module):
         #src = [batch size, src len, hid dim]
         
         for layer in self.layers:
-            src = layer(src)
+            src = layer(src, src_mask)
             
         #src = [batch size, src len, hid dim]
             

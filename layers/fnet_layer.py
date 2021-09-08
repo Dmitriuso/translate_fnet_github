@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 from torch.fft import fftn
 from torch import nn as nn
 from torch.nn import LayerNorm
@@ -31,10 +32,23 @@ class FNetEncoderLayer(nn.Module):
         self.norm1 = nn.LayerNorm(d_model)
         self.norm2 = nn.LayerNorm(d_model)
 
-    def forward(self, x):
+    def forward(self, x, mask=None):
+
+        # x = [batch size, src_len, hid_dim]
+
         residual = x
+
+        # print(f'tensor before mask: {x.shape}')
         x = fourier_transform(x)
         x = self.norm1(x + residual)
+
+        if mask is not None:
+            x = x.masked_fill(mask == 0, -1e10)
+            # x = torch.tril(x)
+            # x = torch.triu(x * float(-1e10), diagonal=1)
+
+        # print(f'tensor after mask: {x.shape}')
+
         residual = x
         x = self.ff(x)
         out = self.norm2(x + residual)
@@ -42,13 +56,11 @@ class FNetEncoderLayer(nn.Module):
 
 
 class FNetLayer(nn.TransformerEncoder):
-    def __init__(
-        self, d_model=256, expansion_factor=2, dropout=0.1, num_layers=1,
-    ):
+    def __init__(self, d_model=256, expansion_factor=2, dropout=0.1, num_layers=1):
         encoder_layer = FNetEncoderLayer(d_model, expansion_factor, dropout)
         super().__init__(encoder_layer=encoder_layer, num_layers=num_layers)
 
-    def forward(self, x):
+    def forward(self, x, mask=None):
         for layer in self.layers:
-            x = layer(x)
+            x = layer(x, mask)
         return x

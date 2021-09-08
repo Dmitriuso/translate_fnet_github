@@ -21,9 +21,10 @@ class Seq2Seq(nn.Module):
         
         #src = [batch size, src len]
         
-        src_mask = (src != self.src_pad_idx).unsqueeze(1).unsqueeze(2)
+        src_mask = (src != self.src_pad_idx).unsqueeze(2)  #.unsqueeze(2)
+        # print(f'size of src_mask: {src_mask.shape}')
 
-        #src_mask = [batch size, 1, 1, src len]
+        #src_mask = [batch size, src len, 1] vs. src_mask = [batch size, 1, 1, src len]
 
         return src_mask
     
@@ -31,26 +32,38 @@ class Seq2Seq(nn.Module):
         
         #trg = [batch size, trg len]
         
-        trg_pad_mask = (trg != self.trg_pad_idx).unsqueeze(1).unsqueeze(2)
-        
-        #trg_pad_mask = [batch size, 1, 1, trg len]
+        trg_pad_mask = (trg != self.trg_pad_idx).unsqueeze(2)
+        # print(f'size of trg_pad_mask: {trg_pad_mask.shape}')
+
+        #trg_pad_mask = [batch size, trg len, 1] vs. trg_pad_mask = [batch size, 1, 1, trg len]
         
         trg_len = trg.shape[1]
         
-        trg_sub_mask = torch.tril(torch.ones((trg_len, trg_len), device = self.device)).bool()
+        # trg_sub_mask = torch.tril(torch.ones((trg_len, trg_len), device=self.device)).bool()
         
         #trg_sub_mask = [trg len, trg len]
             
-        trg_mask = trg_pad_mask & trg_sub_mask
-        
+        # trg_mask = trg_pad_mask & trg_sub_mask
+
         #trg_mask = [batch size, 1, trg len, trg len]
-        
+
+        ### Alternative trg mask ###
+
+        trg_mask = torch.tril(trg_pad_mask)
+
+        # trg mask = [batch size, trg len, 1]
+
+        # print(f'size of trg mask: {trg_mask.shape}')
+
         return trg_mask
 
     def forward(self, src, trg):
         
         #src = [batch size, src len]
+        # print(f'src : {src.shape}')
+
         #trg = [batch size, trg len]
+        # print(f'trg : {trg.shape}')
                 
         src_mask = self.make_src_mask(src)
         trg_mask = self.make_trg_mask(trg)
@@ -58,19 +71,15 @@ class Seq2Seq(nn.Module):
         #src_mask = [batch size, 1, 1, src len]
         #trg_mask = [batch size, 1, trg len, trg len]
         
-        enc_src = self.encoder(src)
-        
-        #enc_src = [batch size, src len, hid dim]
-                
-        output = self.decoder(trg, enc_src)
-        # print('*' * 50)
-        # print(f'src : {src.shape}')
-        # print(f'enc_src : {enc_src.shape}')
-        # print(f'trg : {trg.shape}')
-        # print(f'output : {output.shape}')
-        
+        enc_src = self.encoder(src, src_mask)
 
-        
+        #enc_src = [batch size, src len, hid dim]
+        # print(f'enc_src : {enc_src.shape}')
+
+        output = self.decoder(trg, enc_src, trg_mask, src_mask)
+        # print('*' * 50)
+        # print(f'output : {output.shape}')
+
         #output = [batch size, trg len, output dim]
         #attention = [batch size, n heads, trg len, src len]
         
