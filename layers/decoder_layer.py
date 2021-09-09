@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from layers.fnet_layer import FNetEncoderLayer
+from layers.fnet_layer import FourierLayer
 from layers.pff import PositionwiseFeedforwardLayer
 
 class DecoderLayer(nn.Module):
@@ -15,8 +15,8 @@ class DecoderLayer(nn.Module):
         self.self_attn_layer_norm = nn.LayerNorm(d_model)
         self.enc_attn_layer_norm = nn.LayerNorm(d_model)
         self.ff_layer_norm = nn.LayerNorm(d_model)
-        self.self_fnet = FNetEncoderLayer(d_model, expansion_factor, dropout)
-        self.encoder_fnet = FNetEncoderLayer(d_model, expansion_factor, dropout)
+        self.self_fnet = FourierLayer(d_model, expansion_factor, dropout)
+        self.encoder_fnet = FourierLayer(d_model, expansion_factor, dropout)
         self.positionwise_feedforward = PositionwiseFeedforwardLayer(d_model,
                                                                      pf_dim,
                                                                      dropout)

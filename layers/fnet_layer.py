@@ -7,7 +7,7 @@ def fourier_transform(x):
     return fft(torch.fft.fft(x, dim=-1), dim=-2).real
 
 
-class FNetEncoderLayer(nn.Module):
+class FourierLayer(nn.Module):
     def __init__(self, d_model, expansion_factor, dropout):
         super().__init__()
         self.norm1 = nn.LayerNorm(d_model)

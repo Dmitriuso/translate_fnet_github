@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 # from layers.mha_layer import MultiHeadAttentionLayer
-from layers.fnet_layer import FNetEncoderLayer
+from layers.fnet_layer import FourierLayer
 from layers.pff import PositionwiseFeedforwardLayer
 
 class EncoderLayer(nn.Module):
@@ -15,7 +15,7 @@ class EncoderLayer(nn.Module):
 
         self.self_fnet_layer_norm = nn.LayerNorm(d_model)
         self.ff_layer_norm = nn.LayerNorm(d_model)
-        self.self_fnet = FNetEncoderLayer(d_model, expansion_factor, dropout)
+        self.self_fnet = FourierLayer(d_model, expansion_factor, dropout)
         self.positionwise_feedforward = PositionwiseFeedforwardLayer(d_model,
                                                                      pf_dim,
                                                                      dropout)
