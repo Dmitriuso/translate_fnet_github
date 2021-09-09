@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from layers.fnet_layer import FNetEncoderLayer, FNetLayer
 from layers.pff import PositionwiseFeedforwardLayer
 
@@ -43,8 +44,13 @@ class DecoderLayer(nn.Module):
 
         #dropout, residual connection and layer norm
         max_len = max([trg.shape[1], _src.shape[1]])
-        trg = self.enc_attn_layer_norm(
-            nn.functional.pad(trg, (0, 0, 0, max_len - trg.shape[1])) + nn.functional.pad(_src, (0, 0, 0, max_len - _src.shape[1])))
+        # cannot otherwise add trg and dropout(_src),
+        # because src len and trg len dimensions are different
+        trg = \
+            self.enc_attn_layer_norm(
+                F.pad(trg, (0, 0, 0, max_len - trg.shape[1])) +
+                self.dropout(F.pad(_src, (0, 0, 0, max_len - _src.shape[1])))
+            )
 
         #trg = [batch size, max len, hid dim]
 
