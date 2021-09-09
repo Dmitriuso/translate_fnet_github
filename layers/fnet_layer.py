@@ -11,7 +11,6 @@ class FNetEncoderLayer(nn.Module):
     def __init__(self, d_model, expansion_factor, dropout):
         super().__init__()
         self.norm1 = nn.LayerNorm(d_model)
-        self.norm2 = nn.LayerNorm(d_model)
 
     def forward(self, x, mask=None):
 
