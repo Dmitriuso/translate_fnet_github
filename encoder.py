@@ -7,7 +7,6 @@ class Encoder(nn.Module):
                  input_dim,
                  d_model,
                  n_layers,
-                 expansion_factor,
                  pf_dim,
                  dropout,
                  device):
@@ -19,10 +18,8 @@ class Encoder(nn.Module):
         self.pos_embedding = nn.Embedding(input_dim, d_model)
 
         self.layers = nn.ModuleList([EncoderLayer(d_model,
-                                                  expansion_factor,
                                                   pf_dim,
                                                   dropout)
-
                                      for _ in range(n_layers)])
 
         self.dropout = nn.Dropout(dropout)

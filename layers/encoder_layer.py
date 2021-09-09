@@ -8,14 +8,13 @@ from layers.pff import PositionwiseFeedforwardLayer
 class EncoderLayer(nn.Module):
     def __init__(self,
                  d_model,
-                 expansion_factor,
                  pf_dim,
                  dropout):
         super().__init__()
 
         self.self_fnet_layer_norm = nn.LayerNorm(d_model)
         self.ff_layer_norm = nn.LayerNorm(d_model)
-        self.self_fnet = FourierLayer(d_model, expansion_factor, dropout)
+        self.self_fnet = FourierLayer(d_model)
         self.positionwise_feedforward = PositionwiseFeedforwardLayer(d_model,
                                                                      pf_dim,
                                                                      dropout)

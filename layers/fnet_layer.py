@@ -8,7 +8,7 @@ def fourier_transform(x):
 
 
 class FourierLayer(nn.Module):
-    def __init__(self, d_model, expansion_factor, dropout):
+    def __init__(self, d_model):
         super().__init__()
         self.norm1 = nn.LayerNorm(d_model)
 

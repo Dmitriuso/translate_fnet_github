@@ -7,7 +7,6 @@ class Decoder(nn.Module):
                  output_dim,
                  d_model,
                  n_layers,
-                 expansion_factor,
                  pf_dim,
                  dropout,
                  device,
@@ -20,7 +19,6 @@ class Decoder(nn.Module):
         self.pos_embedding = nn.Embedding(output_dim, d_model)
 
         self.layers = nn.ModuleList([DecoderLayer(d_model,
-                                                  expansion_factor,
                                                   pf_dim,
                                                   dropout)
                                      for _ in range(n_layers)])

@@ -60,7 +60,6 @@ DEC_DROPOUT = 0.1
 enc = Encoder(INPUT_DIM,
               HID_DIM,
               ENC_LAYERS,
-              ENC_HEADS,
               ENC_PF_DIM,
               ENC_DROPOUT,
               device)
@@ -68,7 +67,6 @@ enc = Encoder(INPUT_DIM,
 dec = Decoder(OUTPUT_DIM,
               HID_DIM,
               DEC_LAYERS,
-              DEC_HEADS,
               DEC_PF_DIM,
               DEC_DROPOUT,
               device)

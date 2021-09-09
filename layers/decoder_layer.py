@@ -7,7 +7,6 @@ from layers.pff import PositionwiseFeedforwardLayer
 class DecoderLayer(nn.Module):
     def __init__(self,
                  d_model,
-                 expansion_factor,
                  pf_dim,
                  dropout):
         super().__init__()
@@ -15,8 +14,8 @@ class DecoderLayer(nn.Module):
         self.self_attn_layer_norm = nn.LayerNorm(d_model)
         self.enc_attn_layer_norm = nn.LayerNorm(d_model)
         self.ff_layer_norm = nn.LayerNorm(d_model)
-        self.self_fnet = FourierLayer(d_model, expansion_factor, dropout)
-        self.encoder_fnet = FourierLayer(d_model, expansion_factor, dropout)
+        self.self_fnet = FourierLayer(d_model)
+        self.encoder_fnet = FourierLayer(d_model)
         self.positionwise_feedforward = PositionwiseFeedforwardLayer(d_model,
                                                                      pf_dim,
                                                                      dropout)
