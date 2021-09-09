@@ -8,3 +8,4 @@ tensorboard
 matplotlib
 spacy==3.0
 pkbar
+pytorch-fast-transformers

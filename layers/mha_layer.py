@@ -22,7 +22,7 @@ class MultiHeadAttentionLayer(nn.Module):
         
         self.scale = torch.sqrt(torch.FloatTensor([self.head_dim])).to(device)
         
-    def forward(self, query, key, value, mask = None):
+    def forward(self, query, key, value, mask=None):
         
         batch_size = query.shape[0]
         
