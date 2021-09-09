@@ -29,14 +29,3 @@ class FNetEncoderLayer(nn.Module):
         # x = [batch size, src_len, hid_dim]
 
         return x
-
-
-class FNetLayer(nn.TransformerEncoder):
-    def __init__(self, d_model=256, expansion_factor=2, dropout=0.1, num_layers=1):
-        encoder_layer = FNetEncoderLayer(d_model, expansion_factor, dropout)
-        super().__init__(encoder_layer=encoder_layer, num_layers=num_layers)
-
-    def forward(self, x, mask=None):
-        for layer in self.layers:
-            x = layer(x, mask)
-        return x
