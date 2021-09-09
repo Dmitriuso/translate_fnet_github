@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from layers.fnet_layer import FNetEncoderLayer, FNetLayer
+from layers.fnet_layer import FNetEncoderLayer
 from layers.pff import PositionwiseFeedforwardLayer
 
 class DecoderLayer(nn.Module):
